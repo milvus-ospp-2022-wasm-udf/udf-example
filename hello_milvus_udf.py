@@ -103,10 +103,6 @@ entities = [
 ]
 
 insert_result = hello_milvus_udf.insert(entities)
-
-# check the num_entites
-print(f"Number of entities in Milvus: {hello_milvus_udf.num_entities}")
-
 ################################################################################
 # 4. create index
 # We are going to create an IVF_FLAT index for hello_milvus_udf collection.
@@ -124,29 +120,29 @@ hello_milvus_udf.create_index("embeddings", index)
 # 4. create function
 # We are going to create some udf funciton for hello_milvus_udf collection.
 
-# wat_body = """(module
-#   (type (;0;) (func (param i64 i64) (result i32)))
-#   (func $greater_than (type 0) (param i64 i64) (result i32)
-#     local.get 0
-#     local.get 1
-#     i64.gt_s)
-#   (table (;0;) 1 1 funcref)
-#   (memory (;0;) 16)
-#   (global $__stack_pointer (mut i32) (i32.const 1048576))
-#   (global (;1;) i32 (i32.const 1048576))
-#   (global (;2;) i32 (i32.const 1048576))
-#   (export "memory" (memory 0))
-#   (export "greater_than" (func $greater_than))
-#   (export "__data_end" (global 1))
-#   (export "__heap_base" (global 2)))"""
-# wat_body_base64 = base64.b64encode(wat_body.encode('UTF-8'))
-# arg_types = [DataType.INT64, DataType.INT64]
-# utility.create_function("greater_than", wat_body_base64, arg_types)
+wat_body = """(module
+  (type (;0;) (func (param i64 i64) (result i32)))
+  (func $greater_than (type 0) (param i64 i64) (result i32)
+    local.get 0
+    local.get 1
+    i64.gt_s)
+  (table (;0;) 1 1 funcref)
+  (memory (;0;) 16)
+  (global $__stack_pointer (mut i32) (i32.const 1048576))
+  (global (;1;) i32 (i32.const 1048576))
+  (global (;2;) i32 (i32.const 1048576))
+  (export "memory" (memory 0))
+  (export "greater_than" (func $greater_than))
+  (export "__data_end" (global 1))
+  (export "__heap_base" (global 2)))"""
+wat_body_base64 = base64.b64encode(wat_body.encode('UTF-8'))
+arg_types = [DataType.INT64, DataType.INT64]
+utility.create_function("greater_than", wat_body_base64, arg_types)
 
-# wat_body_base64 = "KG1vZHVsZQogICh0eXBlICg7MDspIChmdW5jIChwYXJhbSBpMzIgaTMyIGkzMiBpNjQgaTY0KSAocmVzdWx0IGkzMikpKQogIChmdW5jICRtdWx0aXBsZV9jb2x1bW5zICh0eXBlIDApIChwYXJhbSBpMzIgaTMyIGkzMiBpNjQgaTY0KSAocmVzdWx0IGkzMikKICAgIGxvY2FsLmdldCAxCiAgICBpNjQuZXh0ZW5kX2kzMl91CiAgICBpNjQuY29uc3QgNDgKICAgIGk2NC5zaGwKICAgIGk2NC5jb25zdCA0OAogICAgaTY0LnNocl9zCiAgICBsb2NhbC5nZXQgMAogICAgaTY0LmV4dGVuZF9pMzJfdQogICAgaTY0LmNvbnN0IDU2CiAgICBpNjQuc2hsCiAgICBpNjQuY29uc3QgNTYKICAgIGk2NC5zaHJfcwogICAgaTY0LmFkZAogICAgbG9jYWwuZ2V0IDIKICAgIGk2NC5leHRlbmRfaTMyX3MKICAgIGk2NC5hZGQKICAgIGxvY2FsLmdldCAzCiAgICBpNjQuYWRkCiAgICBsb2NhbC5nZXQgNAogICAgaTY0Lmd0X3MpCiAgKHRhYmxlICg7MDspIDEgMSBmdW5jcmVmKQogIChtZW1vcnkgKDswOykgMTYpCiAgKGdsb2JhbCAkX19zdGFja19wb2ludGVyIChtdXQgaTMyKSAoaTMyLmNvbnN0IDEwNDg1NzYpKQogIChnbG9iYWwgKDsxOykgaTMyIChpMzIuY29uc3QgMTA0ODU3NikpCiAgKGdsb2JhbCAoOzI7KSBpMzIgKGkzMi5jb25zdCAxMDQ4NTc2KSkKICAoZXhwb3J0ICJtZW1vcnkiIChtZW1vcnkgMCkpCiAgKGV4cG9ydCAibXVsdGlwbGVfY29sdW1ucyIgKGZ1bmMgJG11bHRpcGxlX2NvbHVtbnMpKQogIChleHBvcnQgIl9fZGF0YV9lbmQiIChnbG9iYWwgMSkpCiAgKGV4cG9ydCAiX19oZWFwX2Jhc2UiIChnbG9iYWwgMikpKQ=="
-# arg_types = [DataType.INT8, DataType.INT16,
-#              DataType.INT32, DataType.INT64, DataType.INT64]
-# utility.create_function("multiple_columns", wat_body_base64, arg_types)
+wat_body_base64 = "KG1vZHVsZQogICh0eXBlICg7MDspIChmdW5jIChwYXJhbSBpMzIgaTMyIGkzMiBpNjQgaTY0KSAocmVzdWx0IGkzMikpKQogIChmdW5jICRtdWx0aXBsZV9jb2x1bW5zICh0eXBlIDApIChwYXJhbSBpMzIgaTMyIGkzMiBpNjQgaTY0KSAocmVzdWx0IGkzMikKICAgIGxvY2FsLmdldCAxCiAgICBpNjQuZXh0ZW5kX2kzMl91CiAgICBpNjQuY29uc3QgNDgKICAgIGk2NC5zaGwKICAgIGk2NC5jb25zdCA0OAogICAgaTY0LnNocl9zCiAgICBsb2NhbC5nZXQgMAogICAgaTY0LmV4dGVuZF9pMzJfdQogICAgaTY0LmNvbnN0IDU2CiAgICBpNjQuc2hsCiAgICBpNjQuY29uc3QgNTYKICAgIGk2NC5zaHJfcwogICAgaTY0LmFkZAogICAgbG9jYWwuZ2V0IDIKICAgIGk2NC5leHRlbmRfaTMyX3MKICAgIGk2NC5hZGQKICAgIGxvY2FsLmdldCAzCiAgICBpNjQuYWRkCiAgICBsb2NhbC5nZXQgNAogICAgaTY0Lmd0X3MpCiAgKHRhYmxlICg7MDspIDEgMSBmdW5jcmVmKQogIChtZW1vcnkgKDswOykgMTYpCiAgKGdsb2JhbCAkX19zdGFja19wb2ludGVyIChtdXQgaTMyKSAoaTMyLmNvbnN0IDEwNDg1NzYpKQogIChnbG9iYWwgKDsxOykgaTMyIChpMzIuY29uc3QgMTA0ODU3NikpCiAgKGdsb2JhbCAoOzI7KSBpMzIgKGkzMi5jb25zdCAxMDQ4NTc2KSkKICAoZXhwb3J0ICJtZW1vcnkiIChtZW1vcnkgMCkpCiAgKGV4cG9ydCAibXVsdGlwbGVfY29sdW1ucyIgKGZ1bmMgJG11bHRpcGxlX2NvbHVtbnMpKQogIChleHBvcnQgIl9fZGF0YV9lbmQiIChnbG9iYWwgMSkpCiAgKGV4cG9ydCAiX19oZWFwX2Jhc2UiIChnbG9iYWwgMikpKQ=="
+arg_types = [DataType.INT8, DataType.INT16,
+             DataType.INT32, DataType.INT64, DataType.INT64]
+utility.create_function("multiple_columns", wat_body_base64, arg_types)
 
 ################################################################################
 # 5. search, query, and hybrid search
@@ -154,7 +150,6 @@ hello_milvus_udf.create_index("embeddings", index)
 # - search based on vector similarity
 # - query based on scalar filtering(boolean, int, etc.)
 # - hybrid search based on vector similarity and scalar filtering.
-#
 
 # Before conducting a search or a query, you need to load the data in `hello_milvus_udf` into memory.
 print(fmt.format("Start loading"))
